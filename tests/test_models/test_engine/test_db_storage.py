@@ -86,3 +86,42 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    def test_get_existing_object(self):
+        """Test retrieving an existing object from the database"""
+        state = State(name="California")
+        db_storage.new(state)
+        db_storage.save()
+        retrieved_state = db_storage.get(State, state.id)
+        self.assertEqual(retrieved_state, state)
+
+    def test_get_nonexistent_object(self):
+        """Test retrieving a non-existent object from the database"""
+        retrieved_state = db_storage.get(State, "nonexistent-id")
+        self.assertIsNone(retrieved_state)
+
+    def test_count_all_objects(self):
+        """Test counting all objects in the database"""
+        state1 = State(name="California")
+        state2 = State(name="New York")
+        user = User(name="John Doe")
+        db_storage.new(state1)
+        db_storage.new(state2)
+        db_storage.new(user)
+        db_storage.save()
+        total_count = db_storage.count()
+        self.assertEqual(total_count, 3)
+
+    def test_count_objects_of_class(self):
+        """Test counting objects of a specific class in the database"""
+        state1 = State(name="California")
+        state2 = State(name="New York")
+        user = User(name="John Doe")
+        db_storage.new(state1)
+        db_storage.new(state2)
+        db_storage.new(user)
+        db_storage.save()
+        state_count = db_storage.count(State)
+        self.assertEqual(state_count, 2)
+        user_count = db_storage.count(User)
+        self.assertEqual(user_count, 1)
