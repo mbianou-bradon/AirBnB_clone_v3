@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""Views for Project"""
 
 from flask import Blueprint
 
